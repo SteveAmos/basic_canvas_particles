@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const particlesArray = [];
+let hue = 0;
 
 window.addEventListener('resize', function() { 
     canvas.width = window.innerWidth;
@@ -16,7 +17,7 @@ const mouse = {
 canvas.addEventListener('mousemove', function(event) {
     mouse.x = event.x;
     mouse.y = event.y;
-    for (let i = 0; i < 2; i++){
+    for (let i = 0; i < 20; i++){
         particlesArray.push(new Particle());   
        }   
 });
@@ -24,7 +25,7 @@ canvas.addEventListener('mousemove', function(event) {
 canvas.addEventListener('click', function(event) {
     mouse.x = event.x;
     mouse.y = event.y;
-    for (let i = 0; i < 600; i++){
+    for (let i = 0; i < 50; i++){
      particlesArray.push(new Particle());   
     } 
 });
@@ -35,9 +36,10 @@ class Particle {
         this.y = mouse.y;
         //this.x = Math.random() * canvas.width;
         //this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 6 + 1;
+        this.size = Math.random() * 12 + 1;
         this.speedX = Math.random() * 3 - 1.5;
         this.speedY = Math.random() * 3 - 1.5;
+        this.color = 'hsl(' +hue +', 100%, 50%)';
     }
     update() {
         this.x += this.speedX;
@@ -47,7 +49,7 @@ class Particle {
         }
     }
     draw() {
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -62,8 +64,7 @@ function handleParticles() {
             particlesArray.splice(i, 1);
             console.log(particlesArray.length);
             i--;
-        }
-            
+        }     
     }
 }
 
@@ -72,7 +73,7 @@ function animate() {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.09)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     handleParticles();
-
+    hue++;
     requestAnimationFrame(animate);
 } 
 animate();
