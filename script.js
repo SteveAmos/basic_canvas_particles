@@ -17,7 +17,7 @@ const mouse = {
 canvas.addEventListener('mousemove', function(event) {
     mouse.x = event.x;
     mouse.y = event.y;
-    for (let i = 0; i < 20; i++){
+    for (let i = 0; i < 4; i++){
         particlesArray.push(new Particle());   
        }   
 });
@@ -34,9 +34,7 @@ class Particle {
     constructor() {
         this.x = mouse.x;
         this.y = mouse.y;
-        //this.x = Math.random() * canvas.width;
-        //this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 12 + 1;
+        this.size = Math.random() * 15 + 1;
         this.speedX = Math.random() * 3 - 1.5;
         this.speedY = Math.random() * 3 - 1.5;
         this.color = 'hsl(' +hue +', 100%, 50%)';
@@ -45,7 +43,7 @@ class Particle {
         this.x += this.speedX;
         this.y += this.speedY;
         if (this.size > 0.2) {
-            this.size -= 0.1;
+            this.size -= 0.05;
         }
     }
     draw() {
@@ -60,20 +58,34 @@ function handleParticles() {
     for (let i = 0; i < particlesArray.length; i++) {
         particlesArray[i].update();
         particlesArray[i].draw();
+        for (let j = i; j < particlesArray.length; j++) {
+            const dx = particlesArray[i].x - particlesArray[j].x;
+            const dy = particlesArray[i].y - particlesArray[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < 100){
+                ctx.beginPath();
+                ctx.strokeStyle = particlesArray[i].color;
+                ctx.lineWidth = particlesArray[i].size/12;
+                ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                ctx.stroke();
+            }
+        }         
         if (particlesArray[i].size < 0.3){
             particlesArray.splice(i, 1);
             console.log(particlesArray.length);
             i--;
-        }     
+        }
+    
     }
 }
 
 function animate() {
-    //ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.09)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //ctx.fillStyle = 'rgba(0, 0, 0, 0.09)';
+    //ctx.fillRect(0, 0, canvas.width, canvas.height);
     handleParticles();
-    hue++;
+    hue+=2;
     requestAnimationFrame(animate);
 } 
 animate();
